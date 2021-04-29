@@ -1,0 +1,29 @@
+{
+    "id": "a48692bc-5e99-4e7e-abf0-d192abaadfef",
+    "name": "Custom Environment",
+    "values": [
+        {
+            "key": "baseurl",
+            "value": "http://localhost:3000/",
+            "enabled": true
+        },
+        {
+            "key": "authservice",
+            "value": "http://localhost:3000/auth/login",
+            "enabled": true
+        },
+        {
+            "key": "username",
+            "value": "latha.nandyala@gmail.com",
+            "enabled": true
+        },
+        {
+            "key": "password",
+            "value": "latha",
+            "enabled": true
+        }
+    ],
+    "_postman_variable_scope": "environment",
+    "_postman_exported_at": "2021-04-29T01:27:04.105Z",
+    "_postman_exported_using": "Postman/8.3.0"
+}

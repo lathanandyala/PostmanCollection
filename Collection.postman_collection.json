@@ -1,0 +1,198 @@
+{
+	"info": {
+		"_postman_id": "9850b13b-f2b8-4639-a721-c0b7b6c0ce72",
+		"name": "Common API Collection",
+		"description": "This Collection Contains Sample Requests and Responses from Common API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User Authentication",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" var jsonData = pm.response.json();\r",
+							" \r",
+							"pm.test(\"Json Body Returns Access Token\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"access_token\");\r",
+							"});\r",
+							"\r",
+							"var env1 = pm.globals.get(\"access_token\");\r",
+							"console.log(env1)\r",
+							"\r",
+							"var env2 = jsonData.access_token;\r",
+							" console.log(env2);\r",
+							"\r",
+							"if (env1 == env2)\r",
+							"{\r",
+							"pm.test(\"Access token same as existing token\");\r",
+							"console.log(\"access token not changed\");\r",
+							"}\r",
+							"else\r",
+							"{\r",
+							"console.log(\"access token has been changed\");\r",
+							"pm.test(\"Access token not same as existing token\");\r",
+							"pm.globals.set(\"access_token\", env2); \r",
+							"pm.test(\"access token has been changed\");\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"{{username}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{authservice}}",
+					"host": [
+						"{{authservice}}"
+					]
+				},
+				"description": "User Authentication Post Request will validate the authentication URL by passing Username and Password as JSon Body."
+			},
+			"response": []
+		},
+		{
+			"name": "Access Customers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"for (i=0; i<5; i++)\r",
+							"{\r",
+							"console.log(jsonData[i].CustomerName);\r",
+							"pm.test(\"Json Body matches with Customer Name: \" + jsonData[i].CustomerName, function () {\r",
+							"    pm.expect(pm.response.text()).to.include(jsonData[i].CustomerName);\r",
+							"});\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}Customers",
+					"host": [
+						"{{baseurl}}Customers"
+					]
+				},
+				"description": "Access Customers End Point by passing an access token and Response Body returns All Customer Details"
+			},
+			"response": []
+		},
+		{
+			"name": "Access Specific Customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"TCS\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Customer Name is: \" + jsonData.CustomerName);\r",
+							"pm.test(\"Customer Contract Start Date is: \" + jsonData.ContractStartDate);\r",
+							"pm.test(\"Customer Contract End Date  is: \" + jsonData.ContractEndDate);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}Customers/1000",
+					"host": [
+						"{{baseurl}}Customers"
+					],
+					"path": [
+						"1000"
+					]
+				},
+				"description": "Access Specific Customer Returns the Specific Customer Details"
+			},
+			"response": []
+		},
+		{
+			"name": "Verify Customer Contract",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(jsonData.CustomerName);\r",
+							"});\r",
+							"\r",
+							"var date = jsonData.ContractEndDate;\r",
+							"console.log(date);\r",
+							"\r",
+							"const moment = require(\"moment\")\r",
+							"let isToday   = moment().format(\"YYYY-MM-DD\")\r",
+							"console.log(isToday);\r",
+							"\r",
+							"\r",
+							"if (date <= isToday)\r",
+							"pm.test(\"Customer: \" + jsonData.CustomerName +\" Membership is Over!\");\r",
+							" else\r",
+							" pm.test(\"Customer: \" + jsonData.CustomerName + \" Membership is in!\");\r",
+							" \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}Customers/1000",
+					"host": [
+						"{{baseurl}}Customers"
+					],
+					"path": [
+						"1000"
+					]
+				},
+				"description": "Verify Customer Contract returns the Customer Contract Details"
+			},
+			"response": []
+		}
+	]
+}
